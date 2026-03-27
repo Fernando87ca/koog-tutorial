@@ -1,19 +1,13 @@
-import org.gradle.api.GradleException
+import com.koog.example.buildlogic.readProperty
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.serialization)
-    alias(libs.plugins.buildconfig)
+    alias(libs.plugins.koog.build.logic)
 }
 group = "com.koog.example"
 version = "1.0-SNAPSHOT"
-
-fun Project.readProperty(name: String): String =
-    providers.gradleProperty(name)
-        .orElse(providers.environmentVariable(name))
-        .orNull
-        ?: throw GradleException("Missing secret '$name'. Define it in gradle.properties or as an environment variable.")
 
 kotlin {
     jvmToolchain(21)
@@ -24,10 +18,7 @@ kotlin {
 
 buildConfig {
     packageName(group.toString())
-    useKotlinOutput {
-        internalVisibility = false
-    }
-    buildConfigField("googleApiKey", readProperty("googleApiKey"))
+    buildConfigField("openIAApiKey", readProperty("openIAApiKey"))
 }
 
 tasks.test {
