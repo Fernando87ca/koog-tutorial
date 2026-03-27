@@ -50,11 +50,9 @@ suspend fun main() {
     println(result)
 }
 
-private fun toolRegistry(): ToolRegistry = ToolRegistry {
+private fun toolRegistry() = ToolRegistry {
     tools(MoneyTransferTools())
 }
-
-
 
 
 //    val agent = AIAgent.builder()
