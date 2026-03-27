@@ -6,7 +6,7 @@ group = "com.koog.example"
 version = "1.0-SNAPSHOT"
 
 kotlin {
-    jvmToolchain(23)
+    jvmToolchain(21)
 }
 
 tasks.test {

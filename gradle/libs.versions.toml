@@ -1,20 +1,21 @@
 [versions]
 kotlin = "2.3.10"
-koogVersion = "0.3.0"
+koogVersion = "0.7.2"
 
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
-koog-agent = { group = "ai.koog", name = "kogg-agents", version.ref = "koogVersion" }
-koog-tools = { group = "ai.koog", name = "kogg-tools", version.ref = "koogVersion" }
+koog-agent = { group = "ai.koog", name = "koog-agents", version.ref = "koogVersion" }
+koog-tools = { group = "ai.koog", name = "koog-tools", version.ref = "koogVersion" }
 koog-executor-openai-client = { group = "ai.koog", name = "prompt-executor-openai-client", version.ref = "koogVersion" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-serialization = { id = "org.jetbrains.kotlin.plugin-serialization", version.ref = "kotlin" }
+serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
 [bundles]
 koog = [
     "koog-agent",
     "koog-tools",
+    "koog-executor-openai-client",
 ]
