@@ -9,6 +9,7 @@ kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
 koog-agent = { group = "ai.koog", name = "koog-agents", version.ref = "koogVersion" }
 koog-tools = { group = "ai.koog", name = "agents-tools", version.ref = "koogVersion" }
 koog-executor-openai-client = { group = "ai.koog", name = "prompt-executor-openai-client", version.ref = "koogVersion" }
+koog-features-event-handler = { group = "ai.koog", name = "agents-features-event-handler", version.ref = "koogVersion" }
 buildconfig-gradle-plugin = { group = "com.github.gmazzo.buildconfig", name = "plugin", version.ref = "buildconfig" }
 
 [plugins]
@@ -22,4 +23,5 @@ koog = [
     "koog-agent",
     "koog-tools",
     "koog-executor-openai-client",
+    "koog-features-event-handler",
 ]
