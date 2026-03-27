@@ -6,12 +6,13 @@ koogVersion = "0.7.2"
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
 koog-agent = { group = "ai.koog", name = "koog-agents", version.ref = "koogVersion" }
-koog-tools = { group = "ai.koog", name = "koog-tools", version.ref = "koogVersion" }
+koog-tools = { group = "ai.koog", name = "agents-tools", version.ref = "koogVersion" }
 koog-executor-openai-client = { group = "ai.koog", name = "prompt-executor-openai-client", version.ref = "koogVersion" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+buildconfig = { id = "com.github.gmazzo.buildconfig", version = "6.0.7" }
 
 [bundles]
 koog = [
