@@ -6,6 +6,10 @@ import ai.koog.agents.core.tools.ToolRegistry
 import ai.koog.agents.ext.tool.file.EditFileTool
 import ai.koog.agents.ext.tool.file.ListDirectoryTool
 import ai.koog.agents.ext.tool.file.ReadFileTool
+import ai.koog.agents.ext.tool.shell.ExecuteShellCommandTool
+import ai.koog.agents.ext.tool.shell.JvmShellCommandExecutor
+import ai.koog.agents.ext.tool.shell.PrintShellCommandConfirmationHandler
+import ai.koog.agents.ext.tool.shell.ShellCommandConfirmation
 import ai.koog.agents.features.eventHandler.feature.handleEvents
 import ai.koog.prompt.executor.clients.LLMClient
 import ai.koog.prompt.executor.clients.openai.OpenAILLMClient
@@ -43,18 +47,32 @@ private fun createAgent(promptExecutor: PromptExecutor) = AIAgent(
         tool(ListDirectoryTool(JVMFileSystemProvider.ReadOnly))
         tool(ReadFileTool(JVMFileSystemProvider.ReadOnly))
         tool(EditFileTool(JVMFileSystemProvider.ReadWrite))
+        tool(createExecuteShellCommandToolFromEnv())
     },
-    systemPrompt = """
-            You are a highly skilled programmer tasked with updating the provided codebase according to the given task.
-            Your goal is to deliver production-ready code changes that integrate seamlessly with the existing codebase 
-            and solve given task.
+    systemPrompt =  """
+        You are a highly skilled programmer tasked with updating the provided codebase according to the given task.
+        Your goal is to deliver production-ready code changes that integrate seamlessly with the existing codebase and solve given task.
+        Ensure minimal possible changes done - that guarantees minimal impact on existing functionality.
+        
+        You have shell access to execute commands and run tests.
+        After investigation, define expected behavior with test scripts, then iterate on your implementation until the tests pass.
+        Verify your changes don't break existing functionality through regression testing, but prefer running targeted tests over full test suites.
+        Note: the codebase may be fully configured or freshly cloned with no dependencies installed - handle any necessary setup steps.
         """.trimIndent(),
     strategy = singleRunStrategy(),
-    maxIterations = 100,
+    maxIterations = 400,
 ) {
     handleEvents {
         onToolCallStarting { ctx -> println("Tool '${ctx.toolName}' called with args:" +
                 " ${ctx.toolArgs.toString().take(100)}")
         }
+    }
+}
+
+private fun createExecuteShellCommandToolFromEnv(): ExecuteShellCommandTool {
+    return if (System.getenv("BRAVE_MODE")?.lowercase() == "true") {
+        ExecuteShellCommandTool(JvmShellCommandExecutor()) { _ -> ShellCommandConfirmation.Approved }
+    } else {
+        ExecuteShellCommandTool(JvmShellCommandExecutor(), PrintShellCommandConfirmationHandler())
     }
 }
