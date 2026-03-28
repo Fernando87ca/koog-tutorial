@@ -50,6 +50,7 @@ private fun createAgent(promptExecutor: PromptExecutor) = AIAgent(
         tool(ReadFileTool(JVMFileSystemProvider.ReadOnly))
         tool(EditFileTool(JVMFileSystemProvider.ReadWrite))
         tool(createExecuteShellCommandToolFromEnv())
+        tool(createFindAgentTool(findAgent))
     },
     systemPrompt = """
         You are a highly skilled programmer tasked with updating the provided codebase according to the given task.
