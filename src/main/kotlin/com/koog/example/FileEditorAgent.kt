@@ -11,6 +11,8 @@ import ai.koog.agents.ext.tool.shell.JvmShellCommandExecutor
 import ai.koog.agents.ext.tool.shell.PrintShellCommandConfirmationHandler
 import ai.koog.agents.ext.tool.shell.ShellCommandConfirmation
 import ai.koog.agents.features.eventHandler.feature.handleEvents
+import ai.koog.agents.features.opentelemetry.attribute.CustomAttribute
+import ai.koog.agents.features.opentelemetry.feature.OpenTelemetry
 import ai.koog.prompt.executor.clients.LLMClient
 import ai.koog.prompt.executor.clients.openai.OpenAILLMClient
 import ai.koog.prompt.executor.clients.openai.OpenAIModels
@@ -18,7 +20,7 @@ import ai.koog.prompt.executor.llms.MultiLLMPromptExecutor
 import ai.koog.prompt.executor.model.PromptExecutor
 import ai.koog.rag.base.files.JVMFileSystemProvider
 
-suspend fun main(args: Array < String >) {
+suspend fun main(args: Array<String>) {
     if (args.size < 2) {
         println("Error: Please provide the project absolute path and a task as arguments")
         println("Usage: <absolute_path> <task>")
@@ -49,7 +51,7 @@ private fun createAgent(promptExecutor: PromptExecutor) = AIAgent(
         tool(EditFileTool(JVMFileSystemProvider.ReadWrite))
         tool(createExecuteShellCommandToolFromEnv())
     },
-    systemPrompt =  """
+    systemPrompt = """
         You are a highly skilled programmer tasked with updating the provided codebase according to the given task.
         Your goal is to deliver production-ready code changes that integrate seamlessly with the existing codebase and solve given task.
         Ensure minimal possible changes done - that guarantees minimal impact on existing functionality.
@@ -63,9 +65,20 @@ private fun createAgent(promptExecutor: PromptExecutor) = AIAgent(
     maxIterations = 400,
 ) {
     handleEvents {
-        onToolCallStarting { ctx -> println("Tool '${ctx.toolName}' called with args:" +
-                " ${ctx.toolArgs.toString().take(100)}")
+        onToolCallStarting { ctx ->
+            println(
+                "Tool '${ctx.toolName}' called with args:" +
+                        " ${ctx.toolArgs.toString().take(100)}"
+            )
         }
+    }
+    install(OpenTelemetry) {
+        setVerbose(true) // Send full strings instead of HIDDEN placeholders
+        addLangfuseExporter(
+            traceAttributes = listOf(
+                CustomAttribute("langfuse.session.id", System.getenv("LANGFUSE_SESSION_ID") ?: ""),
+            )
+        )
     }
 }
 
