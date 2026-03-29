@@ -65,22 +65,7 @@ private fun createAgent(promptExecutor: PromptExecutor) = AIAgent(
     strategy = singleRunStrategy(),
     maxIterations = 400,
 ) {
-    handleEvents {
-        onToolCallStarting { ctx ->
-            println(
-                "Tool '${ctx.toolName}' called with args:" +
-                        " ${ctx.toolArgs.toString().take(100)}"
-            )
-        }
-    }
-    install(OpenTelemetry) {
-        setVerbose(true) // Send full strings instead of HIDDEN placeholders
-        addLangfuseExporter(
-            traceAttributes = listOf(
-                CustomAttribute("langfuse.session.id", System.getenv("LANGFUSE_SESSION_ID") ?: ""),
-            )
-        )
-    }
+    setupObservability("FileEditorAgent")
 }
 
 private fun createExecuteShellCommandToolFromEnv(): ExecuteShellCommandTool {
