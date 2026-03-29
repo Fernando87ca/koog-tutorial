@@ -1,8 +1,9 @@
 package com.koog.example
 
 import ai.koog.agents.core.agent.AIAgent
-import ai.koog.agents.core.agent.singleRunStrategy
 import ai.koog.agents.core.tools.ToolRegistry
+import ai.koog.agents.ext.agent.HistoryCompressionConfig
+import ai.koog.agents.ext.agent.singleRunStrategyWithHistoryCompression
 import ai.koog.agents.ext.tool.file.EditFileTool
 import ai.koog.agents.ext.tool.file.ListDirectoryTool
 import ai.koog.agents.ext.tool.file.ReadFileTool
@@ -10,9 +11,6 @@ import ai.koog.agents.ext.tool.shell.ExecuteShellCommandTool
 import ai.koog.agents.ext.tool.shell.JvmShellCommandExecutor
 import ai.koog.agents.ext.tool.shell.PrintShellCommandConfirmationHandler
 import ai.koog.agents.ext.tool.shell.ShellCommandConfirmation
-import ai.koog.agents.features.eventHandler.feature.handleEvents
-import ai.koog.agents.features.opentelemetry.attribute.CustomAttribute
-import ai.koog.agents.features.opentelemetry.feature.OpenTelemetry
 import ai.koog.prompt.executor.clients.LLMClient
 import ai.koog.prompt.executor.clients.openai.OpenAILLMClient
 import ai.koog.prompt.executor.clients.openai.OpenAIModels
@@ -62,7 +60,13 @@ private fun createAgent(promptExecutor: PromptExecutor) = AIAgent(
         Verify your changes don't break existing functionality through regression testing, but prefer running targeted tests over full test suites.
         Note: the codebase may be fully configured or freshly cloned with no dependencies installed - handle any necessary setup steps.
         """.trimIndent(),
-    strategy = singleRunStrategy(),
+    strategy = singleRunStrategyWithHistoryCompression(
+        config = HistoryCompressionConfig(
+            isHistoryTooBig = CODE_AGENT_HISTORY_TOO_BIG,
+            compressionStrategy = CODE_AGENT_COMPRESSION_STRATEGY,
+            retrievalModel = OpenAIModels.Chat.GPT4_1Mini
+        )
+    ),
     maxIterations = 400,
 ) {
     setupObservability("FileEditorAgent")
