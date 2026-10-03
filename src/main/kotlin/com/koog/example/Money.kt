@@ -2,15 +2,11 @@ package com.koog.example
 
 import ai.koog.agents.core.agent.AIAgent
 import ai.koog.agents.core.tools.ToolRegistry
-import ai.koog.agents.core.tools.reflect.tools
-import ai.koog.agents.ext.tool.file.ListDirectoryTool
 import ai.koog.agents.features.eventHandler.feature.handleEvents
 import ai.koog.prompt.executor.clients.LLMClient
 import ai.koog.prompt.executor.clients.openai.OpenAILLMClient
 import ai.koog.prompt.executor.clients.openai.OpenAIModels
 import ai.koog.prompt.executor.llms.MultiLLMPromptExecutor
-import ai.koog.prompt.llm.LLModel
-import ai.koog.rag.base.files.JVMFileSystemProvider
 import com.koog.example.tools.MoneyTransferTools
 
 suspend fun main() {
@@ -37,7 +33,7 @@ suspend fun main() {
             }
             onLLMCallCompleted { llmCallContext ->
                 println("Response from LLM:")
-                llmCallContext.responses.forEach {
+                llmCallContext.response?.let {
                     println("   - $it")
                 }
             }

@@ -11,11 +11,12 @@ import ai.koog.agents.ext.tool.file.ListDirectoryTool
 import ai.koog.agents.ext.tool.file.ReadFileTool
 import ai.koog.agents.ext.tool.search.RegexSearchTool
 import ai.koog.prompt.executor.clients.openai.OpenAIModels
-import ai.koog.prompt.executor.llms.all.simpleOpenAIExecutor
+import ai.koog.prompt.executor.clients.openai.OpenAILLMClient
+import ai.koog.prompt.executor.llms.MultiLLMPromptExecutor
 import ai.koog.rag.base.files.JVMFileSystemProvider
 
 val findAgent = AIAgent(
-    promptExecutor = simpleOpenAIExecutor(apiToken = BuildConfig.openIAApiKey),
+    promptExecutor = MultiLLMPromptExecutor(OpenAILLMClient(apiKey = BuildConfig.openIAApiKey)),
     llmModel = OpenAIModels.Chat.GPT4_1Mini,
     toolRegistry = ToolRegistry {
         tool(ListDirectoryTool(JVMFileSystemProvider.ReadOnly))

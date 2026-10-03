@@ -20,8 +20,8 @@ suspend fun main() {
         }
     )
     val response = client.execute(prompt, model)
-    with (response.first()) {
-        println("Translation: ${this.content}")
+    with (response) {
+        println("Translation: ${this.textContent()}")
         println("Meta.info: ${this.metaInfo}")
     }
 }
