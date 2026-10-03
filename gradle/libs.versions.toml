@@ -1,12 +1,14 @@
 [versions]
 kotlin = "2.3.10"
-koogVersion = "0.7.2"
+koogVersion = "1.0.0"
+koogBetaVersion = "1.0.0-beta"
 buildconfig = "6.0.7"
 
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
 koog-agent = { group = "ai.koog", name = "koog-agents", version.ref = "koogVersion" }
+koog-ext = { group = "ai.koog", name = "agents-ext", version.ref = "koogBetaVersion" }
 koog-tools = { group = "ai.koog", name = "agents-tools", version.ref = "koogVersion" }
 koog-executor-openai-client = { group = "ai.koog", name = "prompt-executor-openai-client", version.ref = "koogVersion" }
 koog-features-event-handler = { group = "ai.koog", name = "agents-features-event-handler", version.ref = "koogVersion" }
@@ -21,6 +23,7 @@ koog-build-logic = { id = "com.koog.example.build-logic" }
 [bundles]
 koog = [
     "koog-agent",
+    "koog-ext",
     "koog-tools",
     "koog-executor-openai-client",
     "koog-features-event-handler",
